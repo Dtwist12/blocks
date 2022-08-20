@@ -13,6 +13,7 @@ HEIGHT = 700
 BACKGROUND = (0,0,0)
 PINK = (255,0,255)
 CYAN = (0,255,255)
+WHITE = (255,255,255)
 size = (WIDTH, HEIGHT)
 screen = pygame.display.set_mode(size)
 
@@ -26,28 +27,54 @@ opponent_position = [random.randint(0,WIDTH-opponent_size),0]
 opponent_list =[opponent_position]
 SPEED = 10
 
+score = 0
+
 
 
 #timing
 game_over = False
 clock = pygame.time.Clock()
+font = pygame.font.SysFont("Helvetica", 30)
+
+
+
+def set_level(score,SPEED):
+  if score < 20:
+    SPEED = 5
+  elif score < 40:
+    SPEED = 8 
+  elif score < 60:
+    SPEED = 10
+  else:
+    SPEED = 20
+  return SPEED
+
 
 def drop_opponent(opponent_list):
-    if len(opponent_list) < 10:
+    delay = random.random()
+    if len(opponent_list) < 10 and delay < 0.1:
         x_pos = random.randint(0, WIDTH-opponent_size)
         y_pos = 0
         opponent_list.append([x_pos,y_pos])
-################################################################
+
+
+
 def draw_opponent(opponent_list):
     for opponent_position in opponent_list:
         pygame.draw.rect(screen, CYAN, (opponent_position[0], opponent_position[1], opponent_size,opponent_size))
 
-def update_opponent_position(opponent_list):
+
+
+def update_opponent_position(opponent_list, score):
     for idx, opponent_position in enumerate (opponent_list):
         if opponent_position[1] >= 0 and opponent_position[1] < HEIGHT:
            opponent_position[1] += SPEED
         else:
             opponent_list.pop(idx)
+            score += 1
+
+    return score
+
 
 def collision_check(opponent_list, player_position):
     for opponent_position in opponent_list:
@@ -111,7 +138,14 @@ while not game_over:
         
 
     drop_opponent(opponent_list)
-    update_opponent_position(opponent_list)
+    score = update_opponent_position(opponent_list,score)
+    SPEED = set_level(score, SPEED)
+
+    text = "Score: " + str(score)
+    label = font.render(text, 1, WHITE)
+    screen.blit(label, (WIDTH-200, HEIGHT-40))
+    
+   
 
     if collision_check(opponent_list, player_position):
         game_over = True
