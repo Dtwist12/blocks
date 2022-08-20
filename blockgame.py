@@ -16,7 +16,7 @@ CYAN = (0,255,255)
 WHITE = (255,255,255)
 size = (WIDTH, HEIGHT)
 screen = pygame.display.set_mode(size)
-
+pygame.display.set_caption("Falling Blocks")
 #player
 player_size = 50
 player_position = [WIDTH /2, HEIGHT-2*player_size]
@@ -39,14 +39,8 @@ font = pygame.font.SysFont("Helvetica", 30)
 
 
 def set_level(score,SPEED):
-  if score < 20:
-    SPEED = 5
-  elif score < 40:
-    SPEED = 8 
-  elif score < 60:
-    SPEED = 10
-  else:
-    SPEED = 20
+
+  SPEED =score/5 +3
   return SPEED
 
 
